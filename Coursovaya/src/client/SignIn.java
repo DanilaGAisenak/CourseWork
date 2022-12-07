@@ -103,7 +103,7 @@ public class SignIn extends JFrame implements ActionListener, WindowListener {
     public void actionRegPerfomed(ActionEvent e){
         Register rd = new Register(null,true,panel, ois, oos);
         rd.setVisible(true);
-        panel.setVisible(false);
+        //panel.setVisible(false);
     }
 
     @Override
@@ -144,6 +144,26 @@ public class SignIn extends JFrame implements ActionListener, WindowListener {
                         AdminFrame af = new AdminFrame(panel, oos, ois, user, num1, this);
                         af.setVisible(true);
                         this.setVisible(false);
+                    }
+                    if (line.equals("U")) {
+                        line = ois.readUTF();
+                        Integer userId = Integer.parseInt(line);
+                        num = 14;
+                        oos.writeUTF(num.toString());
+                        oos.flush();
+                        //Integer numberL = 0;
+                        Integer num1 = 0;
+                        num1 = (Integer) ois.readObject();
+                        //numberL = (Integer) ois.readObject();
+                        server.License license = (server.License) ois.readObject();
+                        //num = 15;
+                        //oos.writeUTF(num.toString());
+                        //oos.flush();
+                        Integer numberH = 0;
+                        numberH = (Integer) ois.readObject();
+                        server.Hws hws = (server.Hws) ois.readObject();
+                        UserFrame uf = new UserFrame(ois, oos,this,userId,log,pas,hws,license,numberH,num1);
+                        uf.setVisible(true);
                     }
                 } else {
                    WarningDialog wd = new WarningDialog(null, true, panel);

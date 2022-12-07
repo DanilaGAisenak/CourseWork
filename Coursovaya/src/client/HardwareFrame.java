@@ -1,7 +1,7 @@
 package client;
 
+import server.Hardware;
 import server.Software;
-import server.User;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -10,12 +10,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class SoftWareFrame extends JFrame implements ActionListener, WindowListener {
+public class HardwareFrame extends JFrame implements ActionListener, WindowListener {
     private JPanel panel;
-    private SoftwareTableModel stm = new SoftwareTableModel();
+    private HardwareTableModel htm = new HardwareTableModel();
     private JScrollPane scroll;
     private JPanel ePanel;
-    private JTable softwTable;
+    private JTable hwTable;
     private JButton edit;
     private JButton delete;
     private JButton register;
@@ -27,7 +27,7 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
     private ArrayList<Integer> price;
     private ArrayList<String> name;
     private ArrayList<String> manufacturer;
-    private server.Software software;
+    private server.Hardware hardware;
     private AdminFrame adf;
     private String swId;
     private String swName;
@@ -36,19 +36,19 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
     private int flag=0;
     private int num;//количество строк в таблице
 
-    public SoftWareFrame(JPanel ePanel, ObjectInputStream ois, ObjectOutputStream oos,
-                         AdminFrame adf, int num, server.Software sw) {
+    public HardwareFrame(JPanel ePanel, ObjectInputStream ois, ObjectOutputStream oos,
+                         AdminFrame adf, int num, server.Hardware hw) {
         this.ePanel = ePanel;
         this.ois = ois;
         this.oos = oos;
         this.adf = adf;
         this.num = num;
-        this.id = sw.getId();
-        this.price = sw.getPrice();
-        this.name = sw.getName();
-        this.manufacturer = sw.getManufacturer();
+        this.id = hw.getId();
+        this.price = hw.getPrice();
+        this.name = hw.getName();
+        this.manufacturer = hw.getManufacturer();
 
-        setTitle("Программное обеспечение");
+        setTitle("Аппаратное обеспечение");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
         setLocation(200, 0);
@@ -63,22 +63,22 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
             row[1] = name.get(i);
             row[2] = price.get(i).toString();
             row[3] = manufacturer.get(i);
-            stm.addData(row);
+            htm.addData(row);
         }
 
-        softwTable = new JTable(stm);
-        softwTable.setSize(700,600);
-        softwTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        hwTable = new JTable(htm);
+        hwTable.setSize(700,600);
+        hwTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                if (softwTable.getSelectedRowCount() > 0){
+                if (hwTable.getSelectedRowCount() > 0){
                     edit.setEnabled(true);
                     delete.setEnabled(true);
-                    int row = softwTable.getSelectedRow();
-                    setSwId((String) softwTable.getValueAt(row, 0));
-                    setSwName((String) softwTable.getValueAt(row, 1));
-                    setSwPrice((String) softwTable.getValueAt(row, 2));
-                    setSwManufacturer((String) softwTable.getValueAt(row, 3));
+                    int row = hwTable.getSelectedRow();
+                    setSwId((String) hwTable.getValueAt(row, 0));
+                    setSwName((String) hwTable.getValueAt(row, 1));
+                    setSwPrice((String) hwTable.getValueAt(row, 2));
+                    setSwManufacturer((String) hwTable.getValueAt(row, 3));
                 }
                 else {
                     edit.setEnabled(false);
@@ -86,19 +86,19 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
                 }
             }
         });
-        scroll = new JScrollPane(softwTable);
+        scroll = new JScrollPane(hwTable);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.setLocation(450,80);
         scroll.setSize(700,600);
         panel.add(scroll);
 
-        register = new JButton("Добавить ПО");
+        register = new JButton("Добавить АО");
         register.setSize(190,40);
         register.setLocation(550,25);
         register.addActionListener(this::actionPerformed);
         panel.add(register);
 
-        delete = new JButton("Удалить ПО");
+        delete = new JButton("Удалить АО");
         delete.setSize(190,40);
         delete.setLocation(745,25);
         delete.addActionListener(this::actionDeletePerformed);
@@ -106,7 +106,7 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
         delete.setEnabled(false);
         panel.add(delete);
 
-        edit = new JButton("Изменить ПО");
+        edit = new JButton("Изменить АО");
         edit.setSize(190,40);
         edit.setLocation(940,25);
         edit.addActionListener(this::actionEditPerformed);
@@ -135,42 +135,42 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
 
     private void actionRefPerformed(ActionEvent actionEvent) {
         if (flag==0){
-            Integer numReg = 6;
+            Integer numReg = 10;
             try {
                 oos.writeUTF(numReg.toString());
                 oos.flush();
                 Integer num1 = 0;
                 num1 = (Integer) ois.readObject();
-                if (num1 > softwTable.getRowCount() & num1 - softwTable.getRowCount() == 1) {
-                    this.software = (Software) ois.readObject();
-                    this.id = this.software.getId();
-                    this.name = this.software.getName();
-                    this.price = this.software.getPrice();
-                    this.manufacturer = this.software.getManufacturer();
+                if (num1 > hwTable.getRowCount() & num1 - hwTable.getRowCount() == 1) {
+                    this.hardware = (Hardware) ois.readObject();
+                    this.id = this.hardware.getId();
+                    this.name = this.hardware.getName();
+                    this.price = this.hardware.getPrice();
+                    this.manufacturer = this.hardware.getManufacturer();
                     String[] row = new String[4];
                     row[0] = id.get(num1 - 1).toString();
                     row[1] = name.get(num1 - 1);
                     row[2] = price.get(num1 - 1).toString();
                     row[3] = manufacturer.get(num1-1).toString();
-                    stm.addData(row);
-                    softwTable.repaint();
+                    htm.addData(row);
+                    hwTable.repaint();
                     refresh.setEnabled(false);
                 } else
-                    if (num1 > softwTable.getRowCount()) {
-                    this.software = (Software) ois.readObject();
-                    this.id = this.software.getId();
-                    this.name = this.software.getName();
-                    this.price = this.software.getPrice();
-                    this.manufacturer = this.software.getManufacturer();
-                    for (int i = softwTable.getRowCount(); i < num1; i++) {
+                if (num1 > hwTable.getRowCount()) {
+                    this.hardware = (Hardware) ois.readObject();
+                    this.id = this.hardware.getId();
+                    this.name = this.hardware.getName();
+                    this.price = this.hardware.getPrice();
+                    this.manufacturer = this.hardware.getManufacturer();
+                    for (int i = hwTable.getRowCount(); i < num1; i++) {
                         String[] row = new String[4];
                         row[0] = id.get(i).toString();
                         row[1] = name.get(i);
                         row[2] = price.get(i).toString();
                         row[3] = manufacturer.get(i).toString();
-                        stm.addData(row);
+                        htm.addData(row);
                     }
-                    softwTable.repaint();
+                    hwTable.repaint();
                     refresh.setEnabled(false);
                 }
             } catch (IOException ex) {
@@ -181,28 +181,28 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
             flag++;
         }
         else if(flag==2){
-            stm.deleteData();
-            softwTable.repaint();
-            Integer numReg = 6;
+            htm.deleteData();
+            hwTable.repaint();
+            Integer numReg = 10;
             try {
                 oos.writeUTF(numReg.toString());
                 oos.flush();
                 Integer num1 = 0;
                 num1 = (Integer) ois.readObject();
-                this.software = (Software) ois.readObject();
-                this.id = this.software.getId();
-                this.name = this.software.getName();
-                this.price = this.software.getPrice();
-                this.manufacturer = this.software.getManufacturer();
+                this.hardware = (Hardware) ois.readObject();
+                this.id = this.hardware.getId();
+                this.name = this.hardware.getName();
+                this.price = this.hardware.getPrice();
+                this.manufacturer = this.hardware.getManufacturer();
                 for (int i = 0; i < num1; i++) {
                     String[] row = new String[4];
                     row[0] = id.get(i).toString();
                     row[1] = name.get(i);
                     row[2] = price.get(i).toString();
                     row[3] = manufacturer.get(i).toString();
-                    stm.addData(row);
+                    htm.addData(row);
                 }
-                softwTable.repaint();
+                hwTable.repaint();
                 refresh.setEnabled(false);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -212,7 +212,7 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
             flag++;
         }
 
-        }
+    }
 
     private void actionClosePerformed(ActionEvent actionEvent) {
         this.dispose();
@@ -220,7 +220,7 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
     }
 
     private void actionEditPerformed(ActionEvent actionEvent) {
-        Delete del = new Delete(null, true, ois, oos, 9, swId, swName, swPrice, swManufacturer);
+        Delete del = new Delete(null, true, ois, oos, 12, swId, swName, swPrice, swManufacturer);
         del.setVisible(true);
         refresh.setEnabled(true);
         delete.setEnabled(false);
@@ -229,7 +229,7 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
     }
 
     private void actionDeletePerformed(ActionEvent actionEvent) {
-        Delete del = new Delete(null, true, ois,oos, 8, swId, swName, swPrice, swManufacturer);
+        Delete del = new Delete(null, true, ois,oos, 13, swId, swName, swPrice, swManufacturer);
         del.setVisible(true);
         refresh.setEnabled(true);
         delete.setEnabled(false);
@@ -239,7 +239,7 @@ public class SoftWareFrame extends JFrame implements ActionListener, WindowListe
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        RegisterDialog rd = new RegisterDialog(null, true, ois, oos, 7);
+        RegisterDialog rd = new RegisterDialog(null, true, ois, oos, 11);
         rd.setVisible(true);
         flag=0;
         refresh.setEnabled(true);

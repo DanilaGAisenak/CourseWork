@@ -1,130 +1,118 @@
 package client;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-public class RegisterDialog extends JFrame implements ActionListener {
-    private JTextField loginRegister;
-    private JTextField passwordRegister;
-    private JLabel loginLa;
-    private JLabel passLa;
-    private JButton sendRegister;
-    private JButton cancelRegister;
+public class RegisterDialog extends JDialog implements ActionListener {
     private JPanel panel;
-    private JPanel epanel;
-    //private Socket sock;
+    private JTextField name;
+    private JTextField price;
+    private JTextField manufacturer;
+    private JLabel nameLa;
+    private JLabel priceLa;
+    private JLabel manufacturerLa;
+    private JButton sendReg;
+    private JButton cancelReg;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
+    private Integer number;
 
-    public RegisterDialog(JPanel epanel, ObjectInputStream ois, ObjectOutputStream oos) {
-        this.epanel = epanel;
+    public RegisterDialog(Frame owner, boolean modal, ObjectInputStream ois, ObjectOutputStream oos, int num) {
+        super(owner, modal);
         this.ois = ois;
         this.oos = oos;
-        setTitle("Регистрация пользователя");
-        setSize(500, 400);
-        //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.number = num;
+        setTitle("Добавление");
         setResizable(false);
+        setSize(500, 400);
         setLocationRelativeTo(null);
+
         panel = new JPanel();
         panel.setLayout(null);
 
-        loginRegister = new JTextField();
-        loginRegister.setSize(200,40);
-        loginRegister.setLocation(150, 80);
-        loginRegister.setVisible(true);
-        panel.add(loginRegister);
+        name = new JTextField();
+        name.setSize(200,40);
+        name.setLocation(150, 50);
+        name.setVisible(true);
+        panel.add(name);
 
-        passwordRegister = new JTextField();
-        passwordRegister.setSize(200, 40);
-        passwordRegister.setLocation(150, 160);
-        passwordRegister.setVisible(true);
-        panel.add(passwordRegister);
+        price = new JTextField();
+        price.setSize(200, 40);
+        price.setLocation(150, 130);
+        price.setVisible(true);
+        panel.add(price);
 
-        loginLa = new JLabel("Логин");
-        loginLa.setSize(50,20);
-        loginLa.setLocation(150,50);
-        loginLa.setVisible(true);
-        panel.add(loginLa);
+        manufacturer = new JTextField();
+        manufacturer.setSize(200, 40);
+        manufacturer.setLocation(150, 210);
+        manufacturer.setVisible(true);
+        panel.add(manufacturer);
 
-        passLa = new JLabel("Пароль");
-        passLa.setSize(50, 20);
-        passLa.setLocation(150, 130);
-        passLa.setVisible(true);
-        panel.add(passLa);
+        nameLa = new JLabel("Название");
+        nameLa.setSize(100,20);
+        nameLa.setLocation(150,20);
+        nameLa.setVisible(true);
+        panel.add(nameLa);
 
-        sendRegister = new JButton("Отправить");
-        sendRegister.setSize(120, 40);
-        sendRegister.setLocation(190, 220);
-        sendRegister.addActionListener(this::actionPerformed);
-        sendRegister.setVisible(true);
-        panel.add(sendRegister);
+        priceLa = new JLabel("Цена");
+        priceLa.setSize(100, 20);
+        priceLa.setLocation(150, 100);
+        priceLa.setVisible(true);
+        panel.add(priceLa);
 
-        cancelRegister = new JButton("Отмена");
-        cancelRegister.setSize(120, 40);
-        cancelRegister.setLocation(190, 270);
-        cancelRegister.setVisible(true);
-        cancelRegister.addActionListener(this::actionCancelPerformed);
-        panel.add(cancelRegister);
+        manufacturerLa = new JLabel("Производитель");
+        manufacturerLa.setSize(100, 20);
+        manufacturerLa.setLocation(150, 180);
+        manufacturerLa.setVisible(true);
+        panel.add(manufacturerLa);
+
+        sendReg = new JButton("Отправить");
+        sendReg.setSize(120, 40);
+        sendReg.setLocation(190, 260);
+        sendReg.addActionListener(this::actionPerformed);
+        sendReg.setVisible(true);
+        panel.add(sendReg);
+
+        cancelReg = new JButton("Отмена");
+        cancelReg.setSize(120, 40);
+        cancelReg.setLocation(190, 310);
+        cancelReg.setVisible(true);
+        cancelReg.addActionListener(this::actionCancelPerformed);
+        panel.add(cancelReg);
 
         setContentPane(panel);
-        setVisible(true);
     }
 
-
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String log;
-        String pas;
-        String res;
-        String line;
-        log = loginRegister.getText();
-        pas = passwordRegister.getText();
-        res = log + " " + pas;
-        Integer num = 2;
-        try {
-            oos.writeUTF(num.toString());
-            oos.flush();
-            System.out.println("1");
-            System.out.println("2");
-            oos.writeUTF(res);
-            oos.flush();
-            System.out.println("3");
-            loginRegister.setText("");
-            passwordRegister.setText("");
-            line= ois.readUTF();
-            System.out.println("4");
-            System.out.println(line);
-            if (line.equals("Command proceeded")){
-                WarningDialog wd = new WarningDialog(panel, "Успешно");
-                wd.setVisible(true);
-                epanel.setVisible(true);
-                this.dispose();
-            }
-            else {
-                WarningDialog wd = new WarningDialog(panel, "Ошибка");
-                wd.setVisible(true);
-                epanel.setVisible(true);
-                this.dispose();
-            }
-        }
-        catch (IOException ex){
-            ex.printStackTrace();
-        }
-    }
-
-    public void actionCancelPerformed(ActionEvent e) {
-        epanel.setVisible(true);
+    private void actionCancelPerformed(ActionEvent actionEvent) {
         this.dispose();
     }
 
-    public String getLoginRegister() {
-        return loginRegister.getText();
-    }
-
-    public String getPasswordRegister() {
-        return passwordRegister.getText();
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        try {
+            oos.writeUTF(number.toString());
+            oos.flush();
+            String res = name.getText()+" "+price.getText()+" "+manufacturer.getText();
+            oos.writeUTF(res);
+            oos.flush();
+            String line = ois.readUTF();
+            if (line.equals("Command proceeded")){
+                WarningDialog wd = new WarningDialog(null, true, panel, "Успешно");
+                line="";
+                this.dispose();
+            }
+            else {
+                WarningDialog wd = new WarningDialog(null, true, panel, "Ошибка");
+                line="";
+                this.dispose();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

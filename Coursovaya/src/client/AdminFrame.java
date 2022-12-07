@@ -20,6 +20,7 @@ public class AdminFrame extends JFrame implements ActionListener, WindowListener
     private JButton hardware;
     private JButton licences;
     private JButton orders;
+    private JButton company;
     private JButton close;
     private JButton refresh;
     private ObjectInputStream ois = null;
@@ -150,8 +151,18 @@ public class AdminFrame extends JFrame implements ActionListener, WindowListener
         orders.setVisible(true);
         panel.add(orders);
 
+        company = new JButton("Компании");
+        company.addActionListener(this::actionComPerformed);
+        company.setSize(250,50);
+        company.setLocation(150,260);
+        company.setVisible(true);
+        panel.add(company);
+
         setContentPane(panel);
         panel.setVisible(true);
+    }
+
+    private void actionComPerformed(ActionEvent actionEvent) {
     }
 
     public void setId(String regId) {
@@ -169,7 +180,6 @@ public class AdminFrame extends JFrame implements ActionListener, WindowListener
     public void actionEditPerformed(ActionEvent e){
         DeleteDialog dg = new DeleteDialog(null, true, panel,  ois, oos, admId, admLog, admPas, 1);
         dg.setVisible(true);
-        //utm.deleteData(Integer.parseInt(admId));
         refresh.setEnabled(true);
         delete.setEnabled(false);
         edit.setEnabled(false);
@@ -184,10 +194,38 @@ public class AdminFrame extends JFrame implements ActionListener, WindowListener
         flag=2;
     }
     public void actionSoftwarePerformed(ActionEvent e){
-
+        Integer num = 6;
+        try {
+            oos.writeUTF(num.toString());
+            oos.flush();
+            Integer num1 = 0;
+            num1 = (Integer) ois.readObject();
+            server.Software sw = (server.Software) ois.readObject();
+            SoftWareFrame swf = new SoftWareFrame(panel, ois, oos, this, num1, sw);
+            swf.setVisible(true);
+            setVisible(false);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
     }
     public void actionHardwarePerformed(ActionEvent e){
-
+        Integer num = 10;
+        try {
+            oos.writeUTF(num.toString());
+            oos.flush();
+            Integer num1 = 0;
+            num1 = (Integer) ois.readObject();
+            server.Hardware hw = (server.Hardware) ois.readObject();
+            HardwareFrame hwf = new HardwareFrame(panel, ois, oos, this, num1, hw);
+            hwf.setVisible(true);
+            setVisible(false);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
     }
     public void actionLicensesPerformed(ActionEvent e){
 

@@ -56,7 +56,7 @@ public class ClientHandler implements Runnable{
                        rs = stmt.executeQuery(query);
                        int j = 0;
                        Integer result = 0;
-                       int[] id = new int[number];
+                       Integer[] id = new Integer[number];
                        String[] login = new String[number];
                        String[] pass = new String[number];
                        while (rs.next()) {
@@ -84,6 +84,9 @@ public class ClientHandler implements Runnable{
                                    } else {
                                        oos.writeUTF("U");
                                        oos.flush();
+                                       oos.writeUTF(id[i].toString());
+                                       oos.flush();
+                                       i = login.length;
                                    }
                                }
                            } else {
@@ -129,7 +132,7 @@ public class ClientHandler implements Runnable{
                         oos.writeObject((User)user);
                         System.out.println("Конец 3");
                     }break;
-                    case 4: {
+                    case 4/*Удаление пользователя*/: {
                         line = ois.readUTF();
                         String[] val = line.split(" ");
                         String query = "DELETE FROM users WHERE idПользователя="+val[0];
@@ -138,7 +141,7 @@ public class ClientHandler implements Runnable{
                         oos.flush();
                         System.out.println("Конец 4");
                     }break;
-                    case 5: {
+                    case 5/*Изменение пользователя*/: {
                         line = ois.readUTF();
                         String[] val = line.split(" ");
                         PreparedStatement prep = connection.prepareStatement("UPDATE users SET Логин=?, Пароль=? WHERE idПользователя=?");
@@ -150,6 +153,150 @@ public class ClientHandler implements Runnable{
                         oos.flush();
                         System.out.println("Конец 5");
                     }break;
+                    case 6/*Заполнение таблицы ПО*/:{
+                        String query = "select count(*) from software";
+                        rs = stmt.executeQuery(query);
+                        Integer number = 0;
+                        while (rs.next()) {
+                            number = rs.getInt(1);
+                        }
+                        oos.writeObject(number);
+                        oos.flush();
+                        query = "select * from software";
+                        rs = stmt.executeQuery(query);
+                        Software sw = new Software(rs);
+                        oos.writeObject((Software)sw);
+                        System.out.println("Конец 6");
+                    }break;
+                    case 7/*Добавление ПО*/:{
+                        line = ois.readUTF();
+                        System.out.println("Sent from client " + line);
+                        String[] val = line.split(" ");
+                        String query = "INSERT Software(Название_ПО, Цена_за_год, Производитель_ПО) VALUES(?,?,?)";
+                        PreparedStatement statement = connection.prepareStatement(query);
+                        statement.setString(1, val[0]);
+                        statement.setString(2, val[1]);
+                        statement.setString(3,val[2]);
+                        statement.execute();
+                        oos.writeUTF("Command proceeded");
+                        oos.flush();
+                        System.out.println("Конец 7");
+                    }break;
+                    case 8/*Удаление По*/:{
+                        line = ois.readUTF();
+                        String[] val = line.split(" ");
+                        String query = "DELETE FROM software WHERE id_ПО="+val[0];
+                        stmt.executeUpdate(query);
+                        oos.writeUTF("Command proceeded");
+                        oos.flush();
+                        System.out.println("Конец 8");
+                    }break;
+                    case 9/*Редактирование ПО*/:{
+                        line = ois.readUTF();
+                        String[] val = line.split(" ");
+                        PreparedStatement prep = connection.prepareStatement("UPDATE software SET Название_ПО=?, Цена_за_год=?, Производитель_ПО=? WHERE id_ПО=?");
+                        prep.setString(1,val[0]);
+                        prep.setString(2,val[1]);
+                        prep.setString(3,val[2]);
+                        prep.setString(4,val[3]);
+                        prep.execute();
+                        oos.writeUTF("Command proceeded");
+                        oos.flush();
+                        System.out.println("Конец 9");
+                    }break;
+                    case 10/*Заполнение таблицы AО*/:{
+                        String query = "select count(*) from hardware";
+                        rs = stmt.executeQuery(query);
+                        Integer number = 0;
+                        while (rs.next()) {
+                            number = rs.getInt(1);
+                        }
+                        oos.writeObject(number);
+                        oos.flush();
+                        query = "select * from hardware";
+                        rs = stmt.executeQuery(query);
+                        Hardware hw = new Hardware(rs);
+                        oos.writeObject((Hardware)hw);
+                        System.out.println("Конец 10");
+                    }break;
+                    case 11/*Добавление AО*/:{
+                        line = ois.readUTF();
+                        System.out.println("Sent from client " + line);
+                        String[] val = line.split(" ");
+                        String query = "INSERT Hardware(Название_АО, Цена_АО, Производитель_АО) VALUES(?,?,?)";
+                        PreparedStatement statement = connection.prepareStatement(query);
+                        statement.setString(1, val[0]);
+                        statement.setString(2, val[1]);
+                        statement.setString(3,val[2]);
+                        statement.execute();
+                        oos.writeUTF("Command proceeded");
+                        oos.flush();
+                        System.out.println("Конец 11");
+                    }
+                    case 12/*Редактирование AО*/:{
+                        line = ois.readUTF();
+                        String[] val = line.split(" ");
+                        PreparedStatement prep = connection.prepareStatement("UPDATE hardware SET Название_АО=?, Цена_АО=?, Производитель_АО=? WHERE id_АО=?");
+                        prep.setString(1,val[0]);
+                        prep.setString(2,val[1]);
+                        prep.setString(3,val[2]);
+                        prep.setString(4,val[3]);
+                        prep.execute();
+                        oos.writeUTF("Command proceeded");
+                        oos.flush();
+                        System.out.println("Конец 12");
+                    }
+                    case 13/*Удаление AO*/: {
+                        line = ois.readUTF();
+                        String[] val = line.split(" ");
+                        String query = "DELETE FROM hardware WHERE id_АО="+val[0];
+                        stmt.executeUpdate(query);
+                        oos.writeUTF("Command proceeded");
+                        oos.flush();
+                        System.out.println("Конец 13");
+                    }
+                    case 14/*Данные в лицензии*/: {
+                        String query = "select count(*) from licenses";
+                        rs = stmt.executeQuery(query);
+                        Integer number = 0;
+                        while (rs.next()) {
+                            number = rs.getInt(1);
+                        }
+                        oos.writeObject(number);
+                        oos.flush();
+                        query = "select * from licenses";
+                        rs = stmt.executeQuery(query);
+                        License license = new License(rs);
+                        oos.writeObject((License)license);
+                        query = "select count(*) from hwstatus";
+                        rs = stmt.executeQuery(query);
+                        number = 0;
+                        while (rs.next()) {
+                            number = rs.getInt(1);
+                        }
+                        oos.writeObject(number);
+                        oos.flush();
+                        query = "select * from hwstatus";
+                        rs = stmt.executeQuery(query);
+                        Hws hws = new Hws(rs);
+                        oos.writeObject((Hws)hws);
+                        System.out.println("Конец 14");
+                    }break;
+                    /*case 15: {
+                        String query = "select count(*) from hwstatus";
+                        rs = stmt.executeQuery(query);
+                        Integer number = 0;
+                        while (rs.next()) {
+                            number = rs.getInt(1);
+                        }
+                        oos.writeObject(number);
+                        oos.flush();
+                        query = "select * from hwstatus";
+                        rs = stmt.executeQuery(query);
+                        Hws hws = new Hws(rs);
+                        oos.writeObject((Hws)hws);
+                        System.out.println("Конец 15");
+                    }break;*/
                 }
             }
 

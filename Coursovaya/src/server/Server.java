@@ -8,18 +8,19 @@ import java.net.Socket;
 public class Server {
     static int countClients = 0;
     private static ObjectInputStream ois;
-    private static  ObjectOutputStream oos;
+    private static ObjectOutputStream oos;
+
     public static void main(String[] args) {
         String con = "jdbc:mysql://localhost:3306/KP";
-        try(Connection connection = DriverManager.getConnection(con,"root","Admin2001");) {
+        try (Connection connection = DriverManager.getConnection(con, "root", "Admin2001");) {
             System.out.println("Connected");
 
             ServerSocket sock = null;
             DataInputStream is = null;
             DataOutputStream os = null;
-            try{
+            try {
                 sock = new ServerSocket(1024);
-                while (true){
+                while (true) {
                     Socket client = sock.accept();
                     countClients++;
                     System.out.println("==============================");

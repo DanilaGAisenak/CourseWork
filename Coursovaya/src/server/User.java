@@ -29,8 +29,8 @@ public class User implements Serializable {
     }
     public void print() {
         for (int i = 0; i < id.size(); i++){
-            System.out.println(id.get(i));
-            System.out.println(login.get(i));
+            System.out.print(id.get(i)+" ");
+            System.out.print(login.get(i)+" ");
             System.out.println(password.get(i));
         }
     }

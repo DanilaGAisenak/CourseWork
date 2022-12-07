@@ -3,12 +3,22 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/Coursovaya/src/client/AdminFrame.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Coursovaya/src/client/Client.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/client/Delete.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Coursovaya/src/client/DeleteDialog.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/client/HardwareFrame.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/client/HardwareTableModel.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/client/HwStatusTableModel.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/client/LicenseTableModel.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Coursovaya/src/client/Register.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Coursovaya/src/client/RegisterDialog.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Coursovaya/src/client/SignIn.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/client/SoftWareFrame.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/client/SoftwareTableModel.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/client/UserFrame.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Coursovaya/src/client/UsersTableModel.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Coursovaya/src/client/WarningDialog.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Coursovaya/src/server/ClientHandler.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/server/Company.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Coursovaya/src/server/Hardware.java" charset="windows-1251" />
   </component>
 </project>
